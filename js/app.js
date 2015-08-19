@@ -3,7 +3,8 @@ var border = {
     left: 0,
     right: 505,
     top: 0,
-    bottom: 415
+    bottom: 385,
+    waterline: 53
 };
 
 var element = {
@@ -65,20 +66,61 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function(){
     this.sprite = 'images/char-boy.png';
+
+    // Initialize player's position
+    this.x = element.width * 2;
+    this.y = element.dy * 5 - 30;
+}
+
+// Reset the player's position to the initial place
+Player.prototype.reset = function(){
+    this.x = element.width * 2;
+    this.y = element.dy * 5 - 30; // border.bottom
 }
 
 // Update the player's position, required method for game
-Player.prototype.update = function(){
-
+Player.prototype.update = function(direction){
+    switch (direction){
+        case 'left':
+            // move player to left
+            this.x = this.x - 30;
+            if (this.x < border.left) {
+                this.x = border.left;
+            }
+            break;
+        case 'right':
+            // move player to right
+            this.x = this.x + 30;
+            if (this.x > (border.right - element.width)){
+                this.x = border.right - element.width;
+            }
+            break;
+        case 'up':
+            // move player up
+            this.y = this.y - 30;
+            if (this.y < border.waterline){
+                this.reset();
+            }
+            break;
+        case 'down':
+            // move player down
+            this.y = this.y + 30;
+            if (this.y > border.bottom){
+                this.y = border.bottom;
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 Player.prototype.render = function(){
-
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 // Determine the key user pressed
 Player.prototype.handleInput = function(key){
-
+    this.update(key);
 }
 
 
