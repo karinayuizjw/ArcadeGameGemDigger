@@ -80,7 +80,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -95,6 +95,23 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+    }
+
+    /*This function is called to check collisions between entities
+     */
+    function checkCollisions(){
+        allEnemies.forEach(function(enemy){
+            var enemyCenterX = enemy.x + 50;
+            var enemyCenterY = enemy.y + 110;
+            var playerCenterX = player.x + 50;
+            var playerCenterY = player.y + 120;
+            var dx = Math.abs(enemyCenterX - playerCenterX);
+            var dy = Math.abs(enemyCenterY - playerCenterY);
+            if (dx < 84 && dy < 55){
+                player.reset();
+            }
+        });
+
     }
 
     /* This function initially draws the "game level", it will then call

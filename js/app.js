@@ -13,6 +13,7 @@ var element = {
     dy: 83
 };
 
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
@@ -24,6 +25,7 @@ var Enemy = function() {
 
     // Initialize enemy speed, random int between 100 and 500
     this.speed = Math.floor(Math.random() * 401) + 100;
+    //this.speed = 100; // for testing
 
     // Initialize enemy position, randomly appeared at the left
     // side of one stone row
@@ -31,7 +33,18 @@ var Enemy = function() {
     this.x = border.left - element.width;
     this.y = currRow * element.dy - 20;
 
+}
 
+// Reset enemy
+Enemy.prototype.reset = function(){
+    // enemy speed
+    this.speed = Math.floor(Math.random() * 401) + 100;
+    //this.speed = 100; // for testing
+
+    // enemy position
+    var currRow = Math.floor(Math.random() * 3 )+ 1;
+    this.x = border.left - element.width;
+    this.y = currRow * element.dy - 20;
 }
 
 // Update the enemy's position, required method for game
@@ -49,7 +62,8 @@ Enemy.prototype.update = function(dt) {
         this.x = border.left - element.width;
         this.y = currRow * element.dy - 20;
 
-        this.speed = Math.floor(Math.random() * 401) + 100;
+        this.speed = Math.floor(Math.random() * 401) + 100; // origin
+        //this.speed = 100; // for testing
 
     }else{
         this.x += this.speed * dt;
@@ -112,6 +126,7 @@ Player.prototype.update = function(direction){
         default:
             break;
     }
+
 }
 
 Player.prototype.render = function(){
