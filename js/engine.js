@@ -130,7 +130,12 @@ var Engine = (function(global) {
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
                 'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+                'images/grass-block.png',   // Row 2 of 2 of grass
+                'images/char-cat-girl.png',       // No.1 of 5 characters
+                'images/char-horn-girl.png',      // No.2 of 5 characters
+                'images/char-boy.png',            // No.3 of 5 characters
+                'images/char-pink-girl.png',      // No.4 of 5 characters
+                'images/char-princess-girl.png'   // No.5 of 5 characters
             ],
             numRows = 6,
             numCols = 5,
@@ -153,6 +158,14 @@ var Engine = (function(global) {
             }
         }
 
+        if (!player.start){
+            for (col = 0; col < numCols; col++){
+                /* Place 5 characters in one line for the user to select.
+                 */
+                ctx.drawImage(Resources.get(rowImages[col + 6]), col * 101, player.y);
+            }
+        }
+
 
         renderEntities();
     }
@@ -165,11 +178,14 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
+        if (player.start){
+            allEnemies.forEach(function(enemy) {
+                enemy.render();
+            });
+        }
 
-        player.render();
+
+        player.render(); // origin
     }
 
     /* This function does nothing but it could have been a good place to
@@ -189,7 +205,12 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Selector.png'
     ]);
     Resources.onReady(init);
 

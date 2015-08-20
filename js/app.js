@@ -79,11 +79,13 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(){
-    this.sprite = 'images/char-boy.png';
+    this.start = false;
+    this.selector = 2;
+    this.sprite = 'images/Selector.png';
 
     // Initialize player's position
     this.x = element.width * 2;
-    this.y = element.dy * 5 - 30;
+    this.y = element.dy * 5 -30;
 }
 
 // Reset the player's position to the initial place
@@ -92,39 +94,94 @@ Player.prototype.reset = function(){
     this.y = element.dy * 5 - 30; // border.bottom
 }
 
-// Update the player's position, required method for game
-Player.prototype.update = function(direction){
-    switch (direction){
-        case 'left':
-            // move player to left
-            this.x = this.x - 30;
-            if (this.x < border.left) {
-                this.x = border.left;
-            }
+// Change the player's sprite
+Player.prototype.change = function(){
+    switch (this.selector){
+        case 0:
+            this.sprite = 'images/char-cat-girl.png';
             break;
-        case 'right':
-            // move player to right
-            this.x = this.x + 30;
-            if (this.x > (border.right - element.width)){
-                this.x = border.right - element.width;
-            }
+        case 1:
+            this.sprite = 'images/char-horn-girl.png';
             break;
-        case 'up':
-            // move player up
-            this.y = this.y - 30;
-            if (this.y < border.waterline){
-                this.reset();
-            }
+        case 2:
+            this.sprite = 'images/char-boy.png';
             break;
-        case 'down':
-            // move player down
-            this.y = this.y + 30;
-            if (this.y > border.bottom){
-                this.y = border.bottom;
-            }
+        case 3:
+            this.sprite = 'images/char-pink-girl.png';
+            break;
+        case 4:
+            this.sprite = 'images/char-princess-girl.png';
             break;
         default:
             break;
+    }
+}
+
+// Update the player's position, required method for game
+Player.prototype.update = function(key){
+
+    if (this.start == false){
+        switch (key){
+            case 'space':
+                this.start = true;
+                this.change();
+                this.reset();
+                break;
+            case 'left':
+                this.x -= element.width;
+                this.selector--;
+                break;
+            case 'right':
+                this.x += element.width;
+                this.selector++;
+                break;
+            default:
+                break;
+        }
+    }else{
+        switch (key){
+            case 'left':
+                // move player to left
+                this.x = this.x - 30;
+                break;
+            case 'right':
+                // move player to right
+                this.x = this.x + 30;
+                break;
+            case 'up':
+                // move player up
+                this.y = this.y - 30;
+                break;
+            case 'down':
+                // move player down
+                this.y = this.y + 30;
+                break;
+            default:
+                break;
+        }
+    }
+
+    // selector validness check
+    if (this.selector < 0){
+        this.selector = 0;
+    }
+
+    if (this.selector > 4){
+        this.selector = 4;
+    }
+
+    // player off screen check
+    if (this.x < border.left) {
+        this.x = border.left;
+    }
+    if (this.x > (border.right - element.width)){
+        this.x = border.right - element.width;
+    }
+    if (this.y < border.waterline){
+        this.reset();
+    }
+    if (this.y > border.bottom){
+        this.y = border.bottom;
     }
 
 }
@@ -151,13 +208,15 @@ while(i < enemyNum){
     i++;
 }
 
-
 var player = new Player();
+
+
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
+        32: 'space',
         37: 'left',
         38: 'up',
         39: 'right',
