@@ -25,9 +25,12 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
-    canvas.height = 606;
-    doc.body.appendChild(canvas);
+    canvas.width = 707;
+    canvas.height = 772;
+    //doc.body.appendChild(canvas);  // origin
+    var gameList = doc.getElementById('game-container');
+    var instructTxt = doc.getElementsByClassName('instruction');
+    gameList.insertBefore(canvas, gameList.childNodes[0]);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -126,9 +129,11 @@ var Engine = (function(global) {
          */
         var rowImages = [
                 'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
+                'images/stone-block.png',   // Row 1 of 5 of stone
+                'images/stone-block.png',   // Row 2 of 5 of stone
+                'images/stone-block.png',   // Row 3 of 5 of stone
+                'images/stone-block.png',   // Row 4 of 5 of stone
+                'images/stone-block.png',   // Row 5 of 5 of stone
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png',   // Row 2 of 2 of grass
                 'images/char-cat-girl.png',       // No.1 of 5 characters
@@ -137,8 +142,8 @@ var Engine = (function(global) {
                 'images/char-pink-girl.png',      // No.4 of 5 characters
                 'images/char-princess-girl.png'   // No.5 of 5 characters
             ],
-            numRows = 6,
-            numCols = 5,
+            numRows = 8,
+            numCols = 7,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -159,11 +164,12 @@ var Engine = (function(global) {
         }
 
         if (!player.start){
-            for (col = 0; col < numCols; col++){
+            for (col = 1; col < numCols - 1; col++){
                 /* Place 5 characters in one line for the user to select.
                  */
-                ctx.drawImage(Resources.get(rowImages[col + 6]), col * 101, player.y);
+                ctx.drawImage(Resources.get(rowImages[col + 7]), col * 101, player.y);
             }
+
         }
 
 
