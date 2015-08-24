@@ -49,25 +49,29 @@ Enemy.prototype.reset = function(){
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
+Enemy.prototype.update = function(dt, pause) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
 
     // Border check
-    if (this.x > border.right){
+    if (!pause){
+        if (this.x > border.right){
 
-        // Initialize enemy
-        var currRow = Math.floor(Math.random() * 5 )+ 1;
-        this.x = border.left - element.width;
-        this.y = currRow * element.dy - 20;
+            // Initialize enemy
+            var currRow = Math.floor(Math.random() * 5 )+ 1;
+            this.x = border.left - element.width;
+            this.y = currRow * element.dy - 20;
 
-        this.speed = Math.floor(Math.random() * 301) + 100; // origin
-        //this.speed = 100; // for testing
+            this.speed = Math.floor(Math.random() * 301) + 100; // origin
+            //this.speed = 100; // for testing
 
-    }else{
-        this.x += this.speed * dt;
+        }else{
+            this.x += this.speed * dt;
+        }
     }
+
+
 }
 
 // Draw the enemy on the screen, required method for game
@@ -80,17 +84,18 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function(){
     this.start = false;
+    this.gameover = false;
     this.selector = 2;
     this.sprite = 'images/Selector.png';
 
     // Initialize player's position
-    this.x = element.width * 2;
+    this.x = element.width * 3;
     this.y = element.dy * 7 -30;
 }
 
 // Reset the player's position to the initial place
 Player.prototype.reset = function(){
-    this.x = element.width * 2;
+    this.x = element.width * 3;
     this.y = element.dy * 7 - 30; // border.bottom
 }
 
@@ -122,7 +127,7 @@ Player.prototype.update = function(key){
 
     if (this.start == false){
         switch (key){
-            case 'space':
+            case 'enter':
                 this.start = true;
                 this.change();
                 this.reset();
@@ -147,27 +152,44 @@ Player.prototype.update = function(key){
     }else{
         var step = 5;
         switch (key){
+            case 'space':
+                if (this.gameover){
+                    this.start = false;
+                    this.gameover = false;
+                    this.sprite = 'images/Selector.png';
+                    this.reset();
+                }
+                break;
             case 'left':
                 // move player to left
-                this.x = this.x - step;
-                if (this.x < border.left) {
-                    this.x = border.left;
+                if (!this.gameover){
+                    this.x = this.x - step;
+                    if (this.x < border.left) {
+                        this.x = border.left;
+                    }
                 }
                 break;
             case 'right':
                 // move player to right
-                this.x = this.x + step;
-                if (this.x > border.right - element.width){
-                    this.x = border.right - element.width;
+                if (!this.gameover){
+                    this.x = this.x + step;
+                    if (this.x > border.right - element.width){
+                        this.x = border.right - element.width;
+                    }
                 }
                 break;
             case 'up':
                 // move player up
-                this.y = this.y - step;
+                if (!this.gameover){
+                    this.y = this.y - step;
+                }
+
                 break;
             case 'down':
                 // move player down
-                this.y = this.y + step;
+                if (!this.gameover){
+                    this.y = this.y + step;
+                }
                 break;
             default:
                 break;
@@ -223,6 +245,7 @@ var player = new Player();
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keydown', function(e) {
     var allowedKeys = {
+        13: 'enter',
         32: 'space',
         37: 'left',
         38: 'up',
@@ -230,7 +253,7 @@ document.addEventListener('keydown', function(e) {
         40: 'down'
     };
 
-    if (e.keyCode == 38 || e.keyCode == 40){
+    if (e.keyCode == 38 || e.keyCode == 32 ||e.keyCode == 40){
         e.preventDefault();
     }
 

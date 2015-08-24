@@ -60,6 +60,7 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
+
     };
 
     /* This function does some initial setup that should only occur once,
@@ -83,7 +84,10 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        checkCollisions();
+        if (player.start){
+            checkCollisions();
+        }
+
     }
 
     /* This is called by the update function  and loops through all of the
@@ -95,7 +99,7 @@ var Engine = (function(global) {
      */
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
+            enemy.update(dt, player.gameover);
         });
         player.update();
     }
@@ -110,8 +114,9 @@ var Engine = (function(global) {
             var playerCenterY = player.y + 120;
             var dx = Math.abs(enemyCenterX - playerCenterX);
             var dy = Math.abs(enemyCenterY - playerCenterY);
-            if (dx < 84 && dy < 55){
-                player.reset();
+            if (dx < 70 && dy < 55){
+                player.gameover = true;
+                //player.start = false;
             }
         });
 
@@ -170,10 +175,35 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[col + 7]), col * 101, player.y);
             }
 
+            ctx.font = '36pt Sigmar One';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText('Ready?', canvas.width/2, element.dy * 3);
+            ctx.fillText('Press ENTER to Start', canvas.width/2, element.dy * 5);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeText('Ready?', canvas.width/2, element.dy * 3);
+            ctx.strokeText('Press ENTER to Start', canvas.width/2, element.dy * 5);
+
+        }
+
+        renderEntities();
+
+        if (player.gameover){
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText('Oops!!', canvas.width/2, element.dy * 3);
+            ctx.fillText('Press SPACE to Restart', canvas.width/2, element.dy * 5);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeText('Oops!!', canvas.width/2, element.dy * 3);
+            ctx.strokeText('Press SPACE to Restart', canvas.width/2, element.dy * 5);
         }
 
 
-        renderEntities();
+
+
+
     }
 
     /* This function is called by the render function and is called on each game
@@ -189,7 +219,6 @@ var Engine = (function(global) {
                 enemy.render();
             });
         }
-
 
         player.render(); // origin
     }
