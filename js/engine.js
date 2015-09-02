@@ -115,7 +115,12 @@ var Engine = (function(global) {
             var dx = Math.abs(enemyCenterX - playerCenterX);
             var dy = Math.abs(enemyCenterY - playerCenterY);
             if (dx < 70 && dy < 55){
-                player.gameover = true;
+                if (player.life == 1){
+                    player.gameover = true;
+                }else{
+                    player.life--;
+                    player.reset();
+                }
                 //player.start = false;
             }
         });
@@ -145,7 +150,8 @@ var Engine = (function(global) {
                 'images/char-horn-girl.png',      // No.2 of 5 characters
                 'images/char-boy.png',            // No.3 of 5 characters
                 'images/char-pink-girl.png',      // No.4 of 5 characters
-                'images/char-princess-girl.png'   // No.5 of 5 characters
+                'images/char-princess-girl.png',  // No.5 of 5 characters
+                'images/Heart.png'                // Heart
             ],
             numRows = 8,
             numCols = 7,
@@ -175,9 +181,8 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[col + 7]), col * 101, player.y);
             }
 
-            ctx.font = '36pt Sigmar One';
+            //ctx.font = '36pt Sigmar One';
             ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
             ctx.fillText('Ready?', canvas.width/2, element.dy * 3);
             ctx.fillText('Press ENTER to Start', canvas.width/2, element.dy * 5);
             ctx.strokeStyle = 'black';
@@ -189,15 +194,39 @@ var Engine = (function(global) {
 
         renderEntities();
 
+        // create player's life label
+        ctx.drawImage(Resources.get(rowImages[13]), 15, 40, 60, 102);
+        ctx.font = '36pt Sigmar One';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.fillText('X', 120, 110);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.strokeText('X', 120, 110);
+
+        // render player's life
+        ctx.fillStyle = 'white';
+        ctx.fillText(player.life, 180, 107);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.strokeText(player.life, 180, 107);
+
+
+
         if (player.gameover){
             ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
             ctx.fillText('Oops!!', canvas.width/2, element.dy * 3);
             ctx.fillText('Press SPACE to Restart', canvas.width/2, element.dy * 5);
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
             ctx.strokeText('Oops!!', canvas.width/2, element.dy * 3);
             ctx.strokeText('Press SPACE to Restart', canvas.width/2, element.dy * 5);
+
+            ctx.fillStyle = 'white';
+            ctx.fillText('0', 180, 107);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeText('0', 180, 107);
         }
 
 
@@ -221,6 +250,7 @@ var Engine = (function(global) {
         }
 
         player.render(); // origin
+
     }
 
     /* This function does nothing but it could have been a good place to
@@ -245,7 +275,8 @@ var Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/Selector.png'
+        'images/Selector.png',
+        'images/Heart.png'
     ]);
     Resources.onReady(init);
 

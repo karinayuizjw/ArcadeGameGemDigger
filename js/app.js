@@ -86,6 +86,7 @@ var Player = function(){
     this.start = false;
     this.gameover = false;
     this.selector = 2;
+    this.life = 3;
     this.sprite = 'images/Selector.png';
 
     // Initialize player's position
@@ -97,6 +98,7 @@ var Player = function(){
 Player.prototype.reset = function(){
     this.x = element.width * 3;
     this.y = element.dy * 7 - 30; // border.bottom
+
 }
 
 // Change the player's sprite
@@ -157,6 +159,7 @@ Player.prototype.update = function(key){
                     this.start = false;
                     this.gameover = false;
                     this.sprite = 'images/Selector.png';
+                    this.life = 3;
                     this.reset();
                 }
                 break;
