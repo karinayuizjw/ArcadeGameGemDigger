@@ -86,6 +86,7 @@ var Engine = (function(global) {
         updateEntities(dt);
         if (player.start){
             checkCollisions();
+            checkGemCollection();
         }
 
     }
@@ -107,13 +108,15 @@ var Engine = (function(global) {
     /*This function is called to check collisions between entities
      */
     function checkCollisions(){
+        var playerCenterX = player.x + 50;
+        var playerCenterY = player.y + 120;
+
         allEnemies.forEach(function(enemy){
             var enemyCenterX = enemy.x + 50;
             var enemyCenterY = enemy.y + 110;
-            var playerCenterX = player.x + 50;
-            var playerCenterY = player.y + 120;
             var dx = Math.abs(enemyCenterX - playerCenterX);
             var dy = Math.abs(enemyCenterY - playerCenterY);
+
             if (dx < 70 && dy < 55){
                 if (player.life == 1){
                     player.gameover = true;
@@ -125,6 +128,55 @@ var Engine = (function(global) {
             }
         });
 
+    }
+
+    function checkGemCollection(){
+        var playerCenterX = player.x + 50;
+        var playerCenterY = player.y + 120;
+
+        for (var i = 0; i < allGems.length; i++){
+            var gemCenterX = allGems[i].x + 50;
+            var gemCenterY = allGems[i].y + 110;
+            var dx = Math.abs(gemCenterX - playerCenterX);
+            var dy = Math.abs(gemCenterY - playerCenterY);
+
+            // player hit gem
+            if (dx < 70 && dy < 55){
+                player.gemCollected++;
+                var ix = allGems[i].x;
+                var iy = allGems[i].y;
+                var updateGemi = true;
+
+                do {
+                    allGems[i].update();
+                    updateGemi = false;
+                    for(var j = 0; j < allGems.length; j++){
+                        if (j != i){
+                            if (ix == allGems[j].x && iy == allGems[j].y){
+                                updateGemi = true;
+                            }
+                        }
+                    }
+
+                }while(updateGemi);
+
+
+            }
+
+        }
+        allGems.forEach(function(gem){
+            var gemCenterX = gem.x + 50;
+            var gemCenterY = gem.y + 110;
+            var dx = Math.abs(gemCenterX - playerCenterX);
+            var dy = Math.abs(gemCenterY - playerCenterY);
+
+            if (dx < 70 && dy < 55){
+                player.gemCollected++;
+
+            }
+
+
+        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -211,16 +263,35 @@ var Engine = (function(global) {
         ctx.lineWidth = 3;
         ctx.strokeText(player.life, 180, 107);
 
+        // create gem collection label
+        ctx.drawImage(Resources.get('images/Gem Orange.png'), 450, 40, 50, 85);
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.fillText('X', 550, 110);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.strokeText('X', 550, 110);
+
+        ctx.fillStyle = 'white';
+        ctx.fillText(player.gemCollected, 610, 107);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.strokeText(player.gemCollected, 610, 107);
+
 
 
         if (player.gameover){
             ctx.fillStyle = 'white';
-            ctx.fillText('Oops!!', canvas.width/2, element.dy * 3);
-            ctx.fillText('Press SPACE to Restart', canvas.width/2, element.dy * 5);
+            ctx.fillText('Oops!!', canvas.width/2, element.dy * 3 - 20);
+            ctx.fillText('High Score:', canvas.width/2 - 40, element.dy * 4 );
+            ctx.fillText(player.gemCollected, canvas.width/2 + 200, element.dy * 4);
+            ctx.fillText('Press SPACE to Restart', canvas.width/2, element.dy * 5 + 20);
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
-            ctx.strokeText('Oops!!', canvas.width/2, element.dy * 3);
-            ctx.strokeText('Press SPACE to Restart', canvas.width/2, element.dy * 5);
+            ctx.strokeText('Oops!!', canvas.width/2, element.dy * 3 - 20);
+            ctx.strokeText('High Score:', canvas.width/2 - 40, element.dy * 4 );
+            ctx.strokeText(player.gemCollected, canvas.width/2 + 200, element.dy * 4);
+            ctx.strokeText('Press SPACE to Restart', canvas.width/2, element.dy * 5 + 20);
 
             ctx.fillStyle = 'white';
             ctx.fillText('0', 180, 107);
@@ -244,6 +315,10 @@ var Engine = (function(global) {
          * the render function you have defined.
          */
         if (player.start){
+            allGems.forEach(function(gem){
+                gem.render();
+            });
+
             allEnemies.forEach(function(enemy) {
                 enemy.render();
             });
@@ -276,7 +351,10 @@ var Engine = (function(global) {
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
         'images/Selector.png',
-        'images/Heart.png'
+        'images/Heart.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Gem Orange.png'
     ]);
     Resources.onReady(init);
 

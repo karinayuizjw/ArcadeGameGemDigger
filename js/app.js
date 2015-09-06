@@ -88,6 +88,7 @@ var Player = function(){
     this.selector = 2;
     this.life = 3;
     this.sprite = 'images/Selector.png';
+    this.gemCollected = 0;
 
     // Initialize player's position
     this.x = element.width * 3;
@@ -160,6 +161,7 @@ Player.prototype.update = function(key){
                     this.gameover = false;
                     this.sprite = 'images/Selector.png';
                     this.life = 3;
+                    this.gemCollected = 0;
                     this.reset();
                 }
                 break;
@@ -227,6 +229,65 @@ Player.prototype.handleInput = function(key){
     this.update(key);
 }
 
+// Gem class
+var Gem = function(){
+    // assign gem sprite
+    var spriteNum = Math.floor(Math.random() * 3);
+
+    switch (spriteNum){
+        case 0:
+            this.sprite = 'images/Gem Blue.png';
+            break;
+        case 1:
+            this.sprite = 'images/Gem Green.png';
+            break;
+        case 2:
+            this.sprite = 'images/Gem Orange.png';
+            break;
+        default:
+            this.sprite = 'images/Gem Blue.png';
+            break;
+    }
+
+    // gem position
+    var currRow = Math.floor(Math.random() * 5 ) + 1;
+    var currCol = Math.floor(Math.random() * 7);
+    this.x = currCol * element.width;
+    this.y = currRow * element.dy - 20;
+
+
+}
+
+Gem.prototype.update = function(){
+
+    var spriteNum = Math.floor(Math.random() * 3);
+
+    switch (spriteNum){
+        case 0:
+            this.sprite = 'images/Gem Blue.png';
+            break;
+        case 1:
+            this.sprite = 'images/Gem Green.png';
+            break;
+        case 2:
+            this.sprite = 'images/Gem Orange.png';
+            break;
+        default:
+            this.sprite = 'images/Gem Blue.png';
+            break;
+    }
+
+    // gem position
+    var currRow = Math.floor(Math.random() * 5 ) + 1;
+    var currCol = Math.floor(Math.random() * 7);
+    this.x = currCol * element.width;
+    this.y = currRow * element.dy - 20;
+}
+
+Gem.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
+}
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -241,6 +302,38 @@ while(i < enemyNum){
 }
 
 var player = new Player();
+
+var allGems = [];
+var gemNum = 5;
+for (i = 0; i < gemNum; i++){
+    var newGem = new Gem();
+    var updateGem = true;
+    var addedGem = false;
+
+    if (allGems.length === 0){
+        allGems.push(newGem);
+    }else{
+
+        // make sure no overlay gems on the screen
+        do {
+            for (var j = 0; j < allGems.length; j++){
+                if (newGem.x != allGems[j].x && newGem.y != allGems[j].y){
+                    allGems.push(newGem);
+                    addedGem = true;
+                    updateGem = false;
+                    break;
+                }
+            }
+
+            if (updateGem){
+                newGem.update();
+            }
+
+        }while(!addedGem);
+
+    }
+}
+console.log('gem length: ' + allGems.length);
 
 
 
