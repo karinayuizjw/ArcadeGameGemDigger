@@ -287,34 +287,55 @@ Gem.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
 }
 
-var Star = function(){
-    this.sprite = 'images/Star.png';
+var Heart = function(){
+    this.sprite = 'images/Heart.png';
     this.visible = false;
     this.active = false;
 
-    var starRow = Math.floor(Math.random() * 7 ) + 1;
-    var starCol = Math.floor(Math.random() * 7);
-    this.x = starCol * element.width;
-    this.y = starRow * element.dy - 20;
+    var hRow = Math.floor(Math.random() * 7 ) + 1;
+    var hCol = Math.floor(Math.random() * 7);
+    this.x = hCol * element.width;
+    this.y = hRow * element.dy - 20;
 }
 
-Star.prototype.update = function(){
+Heart.prototype.update = function(){
 
-    var starRow = Math.floor(Math.random() * 7 ) + 1;
-    var starCol = Math.floor(Math.random() * 7);
-    this.x = starCol * element.width;
-    this.y = starRow * element.dy - 20;
+    var hRow = Math.floor(Math.random() * 7 ) + 1;
+    var hCol = Math.floor(Math.random() * 7);
+    this.x = hCol * element.width;
+    this.y = hRow * element.dy - 20;
 }
 
-Star.prototype.render = function(){
+Heart.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
 }
 
-Star.prototype.sleep = function(){
+Heart.prototype.sleep = function(){
     this.visible = false;
     this.active = false;
 }
 
+// star class for guarding status
+var Star = function(){
+    this.sprite = 'images/Star.png';
+    this.active = false;
+
+    this.x = 0;
+    this.y = 0;
+}
+
+Star.prototype.update = function(slocx, slocy){
+    this.x = slocx;
+    this.y = slocy;
+}
+
+Star.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Star.prototype.sleep = function(){
+    this.active = false;
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -329,6 +350,7 @@ while(i < enemyNum){
 }
 
 var player = new Player();
+var star = new Star();
 
 var allGems = [];
 var gemNum = 5;
@@ -361,7 +383,7 @@ for (i = 0; i < gemNum; i++){
     }
 }
 
-var star = new Star();
+var heart = new Heart();
 
 
 

@@ -87,12 +87,14 @@ var Engine = (function(global) {
         if (player.start){
             checkCollisions();
             checkGemCollection();
-            if (star.visible){
-                checkStarPosition();
-                if (star.active){
-                    checkStarCollection();
+            if (heart.visible){
+                checkHeartPosition();
+                if (heart.active){
+                    checkHeartCollection();
                 }
             }
+
+            star.update(player.x, player.y);
 
         }
 
@@ -135,7 +137,7 @@ var Engine = (function(global) {
                     player.reset();
 
                     if (player.life == 2){
-                        star.visible = true;
+                        heart.visible = true;
                     }
 
                 }
@@ -167,6 +169,9 @@ var Engine = (function(global) {
             // player hit gem
             if (dx < 70 && dy < 55){
                 player.gemCollected++;
+                // test star loc
+                star.active = true;
+
                 var updateGemi = true;
 
                 do {
@@ -191,52 +196,52 @@ var Engine = (function(global) {
         //console.log('checkGemCollection end');
     }
 
-    function checkStarPosition(){
+    function checkHeartPosition(){
 
-        console.log('checkStarPosition start');
+        console.log('checkHeartPosition start');
 
-        if (!star.active){
-            var updateStar = true;
+        if (!heart.active){
+            var updateHeart = true;
 
-            // update star position if it is collided with gem
+            // update heart position if it is collided with gem
             do {
-                star.update();
-                var sx = star.x;
-                var sy = star.y;
-                updateStar = false;
+                heart.update();
+                var hx = heart.x;
+                var hy = heart.y;
+                updateHeart = false;
                 for (var i = 0; i < allGems.length; i++){
-                    if (sx == allGems[i].x && sy == allGems[i].y){
-                        updateStar = true;
+                    if (hx == allGems[i].x && hy == allGems[i].y){
+                        updateHeart = true;
                     }
                 }
 
-            }while(updateStar);
+            }while(updateHeart);
 
-            // star position ok
-            star.active = true;
+            // heart position ok
+            heart.active = true;
         }
 
-        console.log('checkStarPosition end');
+        console.log('checkHeartPosition end');
 
     }
 
-    function checkStarCollection(){
-        console.log('checkStarCollection start');
+    function checkHeartCollection(){
+        console.log('checkHeartCollection start');
 
-        var starX = star.x + 50;
-        var starY = star.y + 110;
+        var heartX = heart.x + 50;
+        var heartY = heart.y + 110;
         var playerCenterX = player.x + 50;
         var playerCenterY = player.y + 120;
-        var dx = Math.abs(starX - playerCenterX);
-        var dy = Math.abs(starY - playerCenterY);
+        var dx = Math.abs(heartX - playerCenterX);
+        var dy = Math.abs(heartY - playerCenterY);
 
         // player hit star
         if (dx < 70 && dy < 55){
             player.life++;
-            star.sleep();
+            heart.sleep();
         }
 
-        console.log('checkStarCollection end');
+        console.log('checkheartCollection end');
 
 
     }
@@ -361,6 +366,7 @@ var Engine = (function(global) {
             ctx.lineWidth = 3;
             ctx.strokeText('0', 180, 107);
 
+            heart.sleep();
             star.sleep();
         }
 
@@ -385,13 +391,17 @@ var Engine = (function(global) {
                 gem.render();
             });
 
-            if (star.active && star.visible){
-                star.render();
+            if (heart.active && heart.visible){
+                heart.render();
             }
 
             allEnemies.forEach(function(enemy) {
                 enemy.render();
             });
+
+            if (star.active){
+                star.render();
+            }
         }
 
         player.render(); // origin
