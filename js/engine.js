@@ -87,6 +87,13 @@ var Engine = (function(global) {
         if (player.start){
             checkCollisions();
             checkGemCollection();
+            if (star.visible){
+                checkStarPosition();
+                if (star.active){
+                    checkStarCollection();
+                }
+            }
+
         }
 
     }
@@ -108,6 +115,9 @@ var Engine = (function(global) {
     /*This function is called to check collisions between entities
      */
     function checkCollisions(){
+        // test log
+        console.log('checkCollisions start');
+
         var playerCenterX = player.x + 50;
         var playerCenterY = player.y + 120;
 
@@ -123,14 +133,23 @@ var Engine = (function(global) {
                 }else{
                     player.life--;
                     player.reset();
+
+                    if (player.life == 2){
+                        star.visible = true;
+                    }
+
                 }
                 //player.start = false;
             }
         });
 
+        console.log('checkCollisions end');
+
     }
 
     function checkGemCollection(){
+        //console.log('checkGemCollection start');
+
         var playerCenterX = player.x + 50;
         var playerCenterY = player.y + 120;
 
@@ -140,15 +159,21 @@ var Engine = (function(global) {
             var dx = Math.abs(gemCenterX - playerCenterX);
             var dy = Math.abs(gemCenterY - playerCenterY);
 
+            //console.log('gemCenterX' + gemCenterX);
+            //console.log('gemCenterY' + gemCenterY);
+            //console.log('dx' + dx);
+            //console.log('dy' + dy);
+
             // player hit gem
             if (dx < 70 && dy < 55){
                 player.gemCollected++;
-                var ix = allGems[i].x;
-                var iy = allGems[i].y;
                 var updateGemi = true;
 
                 do {
+                    //console.log('start gem collection while');
                     allGems[i].update();
+                    var ix = allGems[i].x;
+                    var iy = allGems[i].y;
                     updateGemi = false;
                     for(var j = 0; j < allGems.length; j++){
                         if (j != i){
@@ -159,24 +184,61 @@ var Engine = (function(global) {
                     }
 
                 }while(updateGemi);
-
-
+                //console.log('end gem collection while');
             }
-
         }
-        allGems.forEach(function(gem){
-            var gemCenterX = gem.x + 50;
-            var gemCenterY = gem.y + 110;
-            var dx = Math.abs(gemCenterX - playerCenterX);
-            var dy = Math.abs(gemCenterY - playerCenterY);
 
-            if (dx < 70 && dy < 55){
-                player.gemCollected++;
+        //console.log('checkGemCollection end');
+    }
 
-            }
+    function checkStarPosition(){
+
+        console.log('checkStarPosition start');
+
+        if (!star.active){
+            var updateStar = true;
+
+            // update star position if it is collided with gem
+            do {
+                star.update();
+                var sx = star.x;
+                var sy = star.y;
+                updateStar = false;
+                for (var i = 0; i < allGems.length; i++){
+                    if (sx == allGems[i].x && sy == allGems[i].y){
+                        updateStar = true;
+                    }
+                }
+
+            }while(updateStar);
+
+            // star position ok
+            star.active = true;
+        }
+
+        console.log('checkStarPosition end');
+
+    }
+
+    function checkStarCollection(){
+        console.log('checkStarCollection start');
+
+        var starX = star.x + 50;
+        var starY = star.y + 110;
+        var playerCenterX = player.x + 50;
+        var playerCenterY = player.y + 120;
+        var dx = Math.abs(starX - playerCenterX);
+        var dy = Math.abs(starY - playerCenterY);
+
+        // player hit star
+        if (dx < 70 && dy < 55){
+            player.life++;
+            star.sleep();
+        }
+
+        console.log('checkStarCollection end');
 
 
-        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -298,6 +360,8 @@ var Engine = (function(global) {
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
             ctx.strokeText('0', 180, 107);
+
+            star.sleep();
         }
 
 
@@ -314,10 +378,16 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+        console.log('renderEntities start');
+
         if (player.start){
             allGems.forEach(function(gem){
                 gem.render();
             });
+
+            if (star.active && star.visible){
+                star.render();
+            }
 
             allEnemies.forEach(function(enemy) {
                 enemy.render();
@@ -325,6 +395,8 @@ var Engine = (function(global) {
         }
 
         player.render(); // origin
+
+        console.log('renderEntities end');
 
     }
 
@@ -354,7 +426,8 @@ var Engine = (function(global) {
         'images/Heart.png',
         'images/Gem Blue.png',
         'images/Gem Green.png',
-        'images/Gem Orange.png'
+        'images/Gem Orange.png',
+        'images/Star.png'
     ]);
     Resources.onReady(init);
 

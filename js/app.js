@@ -99,6 +99,7 @@ var Player = function(){
 Player.prototype.reset = function(){
     this.x = element.width * 3;
     this.y = element.dy * 7 - 30; // border.bottom
+    this.selector = 2;
 
 }
 
@@ -254,8 +255,6 @@ var Gem = function(){
     var currCol = Math.floor(Math.random() * 7);
     this.x = currCol * element.width;
     this.y = currRow * element.dy - 20;
-
-
 }
 
 Gem.prototype.update = function(){
@@ -286,6 +285,34 @@ Gem.prototype.update = function(){
 
 Gem.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
+}
+
+var Star = function(){
+    this.sprite = 'images/Star.png';
+    this.visible = false;
+    this.active = false;
+
+    var starRow = Math.floor(Math.random() * 7 ) + 1;
+    var starCol = Math.floor(Math.random() * 7);
+    this.x = starCol * element.width;
+    this.y = starRow * element.dy - 20;
+}
+
+Star.prototype.update = function(){
+
+    var starRow = Math.floor(Math.random() * 7 ) + 1;
+    var starCol = Math.floor(Math.random() * 7);
+    this.x = starCol * element.width;
+    this.y = starRow * element.dy - 20;
+}
+
+Star.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
+}
+
+Star.prototype.sleep = function(){
+    this.visible = false;
+    this.active = false;
 }
 
 
@@ -333,7 +360,8 @@ for (i = 0; i < gemNum; i++){
 
     }
 }
-console.log('gem length: ' + allGems.length);
+
+var star = new Star();
 
 
 
