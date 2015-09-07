@@ -369,12 +369,12 @@ var Engine = (function(global) {
 
             // Instruction
             ctx.fillStyle = 'white';
-            ctx.fillText('Ready?', canvas.width/2, element.dy * 3);
-            ctx.fillText('Press ENTER to Start', canvas.width/2, element.dy * 5);
+            ctx.fillText('Ready?', canvas.width/2, ELEMENT_DY * 3);
+            ctx.fillText('Press ENTER to Start', canvas.width/2, ELEMENT_DY * 5);
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
-            ctx.strokeText('Ready?', canvas.width/2, element.dy * 3);
-            ctx.strokeText('Press ENTER to Start', canvas.width/2, element.dy * 5);
+            ctx.strokeText('Ready?', canvas.width/2, ELEMENT_DY * 3);
+            ctx.strokeText('Press ENTER to Start', canvas.width/2, ELEMENT_DY * 5);
 
         }
 
@@ -416,16 +416,16 @@ var Engine = (function(global) {
 
         if (player.gameover){
             ctx.fillStyle = 'white';
-            ctx.fillText('Oops!!', canvas.width/2, element.dy * 3 - 20);
-            ctx.fillText('High Score:', canvas.width/2 - 40, element.dy * 4 );
-            ctx.fillText(player.gemCollected, canvas.width/2 + 200, element.dy * 4);
-            ctx.fillText('Press SPACE to Restart', canvas.width/2, element.dy * 5 + 20);
+            ctx.fillText('Oops!!', canvas.width/2, ELEMENT_DY * 3 - 20);
+            ctx.fillText('High Score:', canvas.width/2 - 40, ELEMENT_DY * 4 );
+            ctx.fillText(player.gemCollected, canvas.width/2 + 200, ELEMENT_DY * 4);
+            ctx.fillText('Press SPACE to Restart', canvas.width/2, ELEMENT_DY * 5 + 20);
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
-            ctx.strokeText('Oops!!', canvas.width/2, element.dy * 3 - 20);
-            ctx.strokeText('High Score:', canvas.width/2 - 40, element.dy * 4 );
-            ctx.strokeText(player.gemCollected, canvas.width/2 + 200, element.dy * 4);
-            ctx.strokeText('Press SPACE to Restart', canvas.width/2, element.dy * 5 + 20);
+            ctx.strokeText('Oops!!', canvas.width/2, ELEMENT_DY * 3 - 20);
+            ctx.strokeText('High Score:', canvas.width/2 - 40, ELEMENT_DY * 4 );
+            ctx.strokeText(player.gemCollected, canvas.width/2 + 200, ELEMENT_DY * 4);
+            ctx.strokeText('Press SPACE to Restart', canvas.width/2, ELEMENT_DY * 5 + 20);
 
             ctx.fillStyle = 'white';
             ctx.fillText('0', 180, 107);

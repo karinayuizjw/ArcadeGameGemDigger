@@ -1,18 +1,13 @@
 // Global variables
-var border = {
-    left: 0,
-    right: 707,
-    top: 0,
-    bottom: 551,
-    waterline: 53
-};
+var BORDER_LEFT = 0;
+var BORDER_RIGHT = 707;
+var BORDER_TOP = 0;
+var BORDER_BOTTOM = 551;
+var WATERLINE_VALUE = 53;
 
-var element = {
-    width: 101,
-    height: 171,
-    dy: 83
-};
-
+var ELEMENT_WIDTH = 101;
+var ELEMENT_HEIGHT = 171;
+var ELEMENT_DY = 83;
 
 // Enemies our player must avoid
 var Enemy = function() {
@@ -29,8 +24,8 @@ var Enemy = function() {
     // Initialize enemy position, randomly appeared at the left
     // side of one stone row
     var currRow = Math.floor(Math.random() * 5 )+ 1;
-    this.x = border.left - element.width;
-    this.y = currRow * element.dy - 20;
+    this.x = BORDER_LEFT - ELEMENT_WIDTH;
+    this.y = currRow * ELEMENT_DY - 20;
 
 }
 
@@ -41,8 +36,8 @@ Enemy.prototype.reset = function(){
 
     // Enemy position
     var currRow = Math.floor(Math.random() * 5 )+ 1;
-    this.x = border.left - element.width;
-    this.y = currRow * element.dy - 20;
+    this.x = BORDER_LEFT - ELEMENT_WIDTH;
+    this.y = currRow * ELEMENT_DY - 20;
 }
 
 // Update the enemy's position, required method for game
@@ -54,12 +49,12 @@ Enemy.prototype.update = function(dt, pause) {
 
     // Border check
     if (!pause){
-        if (this.x > border.right){
+        if (this.x > BORDER_RIGHT){
 
             // Initialize enemy
             var currRow = Math.floor(Math.random() * 5 )+ 1;
-            this.x = border.left - element.width;
-            this.y = currRow * element.dy - 20;
+            this.x = BORDER_LEFT - ELEMENT_WIDTH;
+            this.y = currRow * ELEMENT_DY - 20;
 
             this.speed = Math.floor(Math.random() * 301) + 100;
 
@@ -88,14 +83,14 @@ var Player = function(){
     this.gemCollected = 0;
 
     // Initialize player's position
-    this.x = element.width * 3;
-    this.y = element.dy * 7 -30;
+    this.x = ELEMENT_WIDTH * 3;
+    this.y = ELEMENT_DY * 7 -30;
 }
 
 // Reset the player's position to the initial place
 Player.prototype.reset = function(){
-    this.x = element.width * 3;
-    this.y = element.dy * 7 - 30; // border.bottom
+    this.x = ELEMENT_WIDTH * 3;
+    this.y = ELEMENT_DY * 7 - 30; // BORDER_BOTTOM
     this.selector = 2;
 
 }
@@ -135,17 +130,17 @@ Player.prototype.update = function(key){
                 this.reset();
                 break;
             case 'left':
-                this.x -= element.width;
+                this.x -= ELEMENT_WIDTH;
                 this.selector--;
-                if (this.x < element.width){
-                    this.x = element.width;
+                if (this.x < ELEMENT_WIDTH){
+                    this.x = ELEMENT_WIDTH;
                 }
                 break;
             case 'right':
-                this.x += element.width;
+                this.x += ELEMENT_WIDTH;
                 this.selector++;
-                if (this.x > 5 * element.width){
-                    this.x = 5 * element.width;
+                if (this.x > 5 * ELEMENT_WIDTH){
+                    this.x = 5 * ELEMENT_WIDTH;
                 }
                 break;
             default:
@@ -169,8 +164,8 @@ Player.prototype.update = function(key){
                 // Move player to left
                 if (!this.gameover){
                     this.x = this.x - step;
-                    if (this.x < border.left) {
-                        this.x = border.left;
+                    if (this.x < BORDER_LEFT) {
+                        this.x = BORDER_LEFT;
                     }
                 }
                 break;
@@ -178,8 +173,8 @@ Player.prototype.update = function(key){
                 // Move player to right
                 if (!this.gameover){
                     this.x = this.x + step;
-                    if (this.x > border.right - element.width){
-                        this.x = border.right - element.width;
+                    if (this.x > BORDER_RIGHT - ELEMENT_WIDTH){
+                        this.x = BORDER_RIGHT - ELEMENT_WIDTH;
                     }
                 }
                 break;
@@ -211,11 +206,11 @@ Player.prototype.update = function(key){
     }
 
     // Player out of screen check, y direction
-    if (this.y < border.waterline){
-        this.y = border.waterline;
+    if (this.y < WATERLINE_VALUE){
+        this.y = WATERLINE_VALUE;
     }
-    if (this.y > border.bottom){
-        this.y = border.bottom;
+    if (this.y > BORDER_BOTTOM){
+        this.y = BORDER_BOTTOM;
     }
 
 }
@@ -252,8 +247,8 @@ var Gem = function(){
     // Gem position
     var currRow = Math.floor(Math.random() * 5 ) + 1;
     var currCol = Math.floor(Math.random() * 7);
-    this.x = currCol * element.width;
-    this.y = currRow * element.dy - 20;
+    this.x = currCol * ELEMENT_WIDTH;
+    this.y = currRow * ELEMENT_DY - 20;
 }
 
 Gem.prototype.update = function(){
@@ -278,8 +273,8 @@ Gem.prototype.update = function(){
     // Gem position
     var currRow = Math.floor(Math.random() * 5 ) + 1;
     var currCol = Math.floor(Math.random() * 7);
-    this.x = currCol * element.width;
-    this.y = currRow * element.dy - 20;
+    this.x = currCol * ELEMENT_WIDTH;
+    this.y = currRow * ELEMENT_DY - 20;
 }
 
 Gem.prototype.render = function(){
@@ -294,16 +289,16 @@ var Heart = function(){
 
     var hRow = Math.floor(Math.random() * 7 ) + 1;
     var hCol = Math.floor(Math.random() * 7);
-    this.x = hCol * element.width;
-    this.y = hRow * element.dy - 20;
+    this.x = hCol * ELEMENT_WIDTH;
+    this.y = hRow * ELEMENT_DY - 20;
 }
 
 Heart.prototype.update = function(){
     // Update heart location
     var hRow = Math.floor(Math.random() * 7 ) + 1;
     var hCol = Math.floor(Math.random() * 7);
-    this.x = hCol * element.width;
-    this.y = hRow * element.dy - 20;
+    this.x = hCol * ELEMENT_WIDTH;
+    this.y = hRow * ELEMENT_DY - 20;
 }
 
 Heart.prototype.render = function(){
@@ -345,16 +340,16 @@ var Key = function(){
 
     var kRow = Math.floor(Math.random() * 7 ) + 1;
     var kCol = Math.floor(Math.random() * 7);
-    this.x = kCol * element.width;
-    this.y = kRow * element.dy - 20;
+    this.x = kCol * ELEMENT_WIDTH;
+    this.y = kRow * ELEMENT_DY - 20;
 }
 
 Key.prototype.update = function(){
     // Randomly update key's location
     var kRow = Math.floor(Math.random() * 7 ) + 1;
     var kCol = Math.floor(Math.random() * 7);
-    this.x = kCol * element.width;
-    this.y = kRow * element.dy - 20;
+    this.x = kCol * ELEMENT_WIDTH;
+    this.y = kRow * ELEMENT_DY - 20;
 }
 
 Key.prototype.render = function(){
