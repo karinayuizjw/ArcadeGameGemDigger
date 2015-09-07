@@ -35,6 +35,25 @@ ul {
 	font-style: bold;
 }
 
+em{
+	font-weight: bold;
+}
+
+.direction {
+	color: #0000B8;
+}
+
+.gem {
+	color: #199019;
+}
+
+.key {
+	color: #D18E28;
+}
+
+.heart {
+	color: #E60000;
+}
 
 footer {
 	font-family: 'Noto Sans', sans-sarif;

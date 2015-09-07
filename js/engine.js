@@ -51,6 +51,11 @@ var Engine = (function(global) {
         update(dt);
         render();
 
+        /* Set timeout if invincible mode is active*/
+        if (star.active){
+            setTimeout(function(){star.active = false;}, 5000);
+        }
+
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -85,7 +90,12 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         if (player.start){
-            checkCollisions();
+            // Check invincible mode is on/off
+            if (!star.active){
+                checkCollisions();
+            }
+
+            // Check gem collection
             checkGemCollection();
             if (heart.visible){
                 checkHeartPosition();
@@ -94,7 +104,19 @@ var Engine = (function(global) {
                 }
             }
 
-            star.update(player.x, player.y);
+            // Check key collection
+            if (key.visible){
+                checkKeyLocation();
+                if (key.active){
+                    checkKeyCollection();
+                }
+            }
+
+            // Check whether to active invincible mode
+            if (star.active){
+                star.update(player.x, player.y);
+            }
+
 
         }
 
@@ -114,11 +136,10 @@ var Engine = (function(global) {
         player.update();
     }
 
-    /*This function is called to check collisions between entities
+    /*This function is called to check collisions between player and
+     *enemies.
      */
     function checkCollisions(){
-        // test log
-        console.log('checkCollisions start');
 
         var playerCenterX = player.x + 50;
         var playerCenterY = player.y + 120;
@@ -141,41 +162,34 @@ var Engine = (function(global) {
                     }
 
                 }
-                //player.start = false;
             }
         });
-
-        console.log('checkCollisions end');
 
     }
 
     function checkGemCollection(){
-        //console.log('checkGemCollection start');
 
         var playerCenterX = player.x + 50;
         var playerCenterY = player.y + 120;
 
         for (var i = 0; i < allGems.length; i++){
             var gemCenterX = allGems[i].x + 50;
-            var gemCenterY = allGems[i].y + 110;
+            var gemCenterY = allGems[i].y + 100;
             var dx = Math.abs(gemCenterX - playerCenterX);
             var dy = Math.abs(gemCenterY - playerCenterY);
 
-            //console.log('gemCenterX' + gemCenterX);
-            //console.log('gemCenterY' + gemCenterY);
-            //console.log('dx' + dx);
-            //console.log('dy' + dy);
-
-            // player hit gem
-            if (dx < 70 && dy < 55){
+            // Player hit gem
+            if (dx < 50 && dy < 50){
                 player.gemCollected++;
-                // test star loc
-                star.active = true;
 
+                // Check whether to activate key
+                if (player.gemCollected % 7 == 0 && player.gemCollected > 0){
+                    key.visible = true;
+                }
+
+                // Make sure no overlay on the existing objects
                 var updateGemi = true;
-
                 do {
-                    //console.log('start gem collection while');
                     allGems[i].update();
                     var ix = allGems[i].x;
                     var iy = allGems[i].y;
@@ -188,22 +202,30 @@ var Engine = (function(global) {
                         }
                     }
 
+                    if (heart.active){
+                        if (ix == heart.x && iy == heart.y){
+                           updateGemi = true;
+                        }
+                    }
+
+                    if (key.active){
+                        if (ix == key.x && iy == key.y){
+                           updateGemi = true;
+                        }
+                    }
+
                 }while(updateGemi);
-                //console.log('end gem collection while');
             }
         }
 
-        //console.log('checkGemCollection end');
     }
 
     function checkHeartPosition(){
 
-        console.log('checkHeartPosition start');
-
         if (!heart.active){
             var updateHeart = true;
 
-            // update heart position if it is collided with gem
+            // Update heart position if it is collided with gem
             do {
                 heart.update();
                 var hx = heart.x;
@@ -215,35 +237,80 @@ var Engine = (function(global) {
                     }
                 }
 
+                if (key.active){
+                    if (hx == key.x && hy == key.y){
+                        updateHeart = true;
+                    }
+                }
+
             }while(updateHeart);
 
-            // heart position ok
+            // Heart position ok
             heart.active = true;
         }
-
-        console.log('checkHeartPosition end');
 
     }
 
     function checkHeartCollection(){
-        console.log('checkHeartCollection start');
 
         var heartX = heart.x + 50;
-        var heartY = heart.y + 110;
+        var heartY = heart.y + 100;
         var playerCenterX = player.x + 50;
         var playerCenterY = player.y + 120;
         var dx = Math.abs(heartX - playerCenterX);
         var dy = Math.abs(heartY - playerCenterY);
 
-        // player hit star
-        if (dx < 70 && dy < 55){
+        // Player hit heart
+        if (dx < 50 && dy < 50){
             player.life++;
             heart.sleep();
         }
 
-        console.log('checkheartCollection end');
+    }
 
+    function checkKeyLocation(){
 
+        if (!key.active){
+            var updateKey = true;
+
+            // Update key position if it covers gem
+            do {
+                key.update();
+                var kx = key.x;
+                var ky = key.y;
+                updateKey = false;
+                for (var i = 0; i < allGems.length; i++){
+                    if (kx == allGems[i].x && ky == allGems[i].y){
+                        updateKey = true;
+                    }
+                }
+
+                if (heart.active){
+                    if (kx == heart.x && ky == heart.y){
+                        updateKey = true;
+                    }
+                }
+
+            }while(updateKey);
+
+            // Key position ok
+            key.active = true;
+        }
+    }
+
+    function checkKeyCollection(){
+        var keyX = key.x + 50;
+        var keyY = key.y + 100;
+        var playerCenterX = player.x + 50;
+        var playerCenterY = player.y + 120;
+        var dx = Math.abs(keyX - playerCenterX);
+        var dy = Math.abs(keyY - playerCenterY);
+
+        // Player collides with key
+        if (dx < 50 && dy < 50){
+            star.active = true;
+            key.sleep();
+        }
     }
 
     /* This function initially draws the "game level", it will then call
@@ -300,7 +367,7 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[col + 7]), col * 101, player.y);
             }
 
-            //ctx.font = '36pt Sigmar One';
+            // Instruction
             ctx.fillStyle = 'white';
             ctx.fillText('Ready?', canvas.width/2, element.dy * 3);
             ctx.fillText('Press ENTER to Start', canvas.width/2, element.dy * 5);
@@ -313,7 +380,7 @@ var Engine = (function(global) {
 
         renderEntities();
 
-        // create player's life label
+        // Create player's life label
         ctx.drawImage(Resources.get(rowImages[13]), 15, 40, 60, 102);
         ctx.font = '36pt Sigmar One';
         ctx.fillStyle = 'white';
@@ -323,14 +390,14 @@ var Engine = (function(global) {
         ctx.lineWidth = 3;
         ctx.strokeText('X', 120, 110);
 
-        // render player's life
+        // Render player's life
         ctx.fillStyle = 'white';
         ctx.fillText(player.life, 180, 107);
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 3;
         ctx.strokeText(player.life, 180, 107);
 
-        // create gem collection label
+        // Create gem collection label
         ctx.drawImage(Resources.get('images/Gem Orange.png'), 450, 40, 50, 85);
         ctx.fillStyle = 'white';
         ctx.textAlign = 'center';
@@ -368,6 +435,7 @@ var Engine = (function(global) {
 
             heart.sleep();
             star.sleep();
+            key.sleep();
         }
 
 
@@ -384,8 +452,6 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        console.log('renderEntities start');
-
         if (player.start){
             allGems.forEach(function(gem){
                 gem.render();
@@ -393,6 +459,10 @@ var Engine = (function(global) {
 
             if (heart.active && heart.visible){
                 heart.render();
+            }
+
+            if (key.active){
+                key.render();
             }
 
             allEnemies.forEach(function(enemy) {
@@ -404,9 +474,7 @@ var Engine = (function(global) {
             }
         }
 
-        player.render(); // origin
-
-        console.log('renderEntities end');
+        player.render();
 
     }
 
@@ -437,7 +505,8 @@ var Engine = (function(global) {
         'images/Gem Blue.png',
         'images/Gem Green.png',
         'images/Gem Orange.png',
-        'images/Star.png'
+        'images/Star.png',
+        'images/Key.png'
     ]);
     Resources.onReady(init);
 

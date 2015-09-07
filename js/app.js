@@ -25,7 +25,6 @@ var Enemy = function() {
 
     // Initialize enemy speed, random int between 100 and 500
     this.speed = Math.floor(Math.random() * 301) + 100;
-    //this.speed = 100; // for testing
 
     // Initialize enemy position, randomly appeared at the left
     // side of one stone row
@@ -37,11 +36,10 @@ var Enemy = function() {
 
 // Reset enemy
 Enemy.prototype.reset = function(){
-    // enemy speed
+    // Enemy speed
     this.speed = Math.floor(Math.random() * 301) + 100;
-    //this.speed = 100; // for testing
 
-    // enemy position
+    // Enemy position
     var currRow = Math.floor(Math.random() * 5 )+ 1;
     this.x = border.left - element.width;
     this.y = currRow * element.dy - 20;
@@ -63,8 +61,7 @@ Enemy.prototype.update = function(dt, pause) {
             this.x = border.left - element.width;
             this.y = currRow * element.dy - 20;
 
-            this.speed = Math.floor(Math.random() * 301) + 100; // origin
-            //this.speed = 100; // for testing
+            this.speed = Math.floor(Math.random() * 301) + 100;
 
         }else{
             this.x += this.speed * dt;
@@ -130,6 +127,7 @@ Player.prototype.change = function(){
 Player.prototype.update = function(key){
 
     if (this.start == false){
+        // Select player character
         switch (key){
             case 'enter':
                 this.start = true;
@@ -157,6 +155,7 @@ Player.prototype.update = function(key){
         var step = 5;
         switch (key){
             case 'space':
+                // Restart game
                 if (this.gameover){
                     this.start = false;
                     this.gameover = false;
@@ -167,7 +166,7 @@ Player.prototype.update = function(key){
                 }
                 break;
             case 'left':
-                // move player to left
+                // Move player to left
                 if (!this.gameover){
                     this.x = this.x - step;
                     if (this.x < border.left) {
@@ -176,7 +175,7 @@ Player.prototype.update = function(key){
                 }
                 break;
             case 'right':
-                // move player to right
+                // Move player to right
                 if (!this.gameover){
                     this.x = this.x + step;
                     if (this.x > border.right - element.width){
@@ -185,14 +184,14 @@ Player.prototype.update = function(key){
                 }
                 break;
             case 'up':
-                // move player up
+                // Move player up
                 if (!this.gameover){
                     this.y = this.y - step;
                 }
 
                 break;
             case 'down':
-                // move player down
+                // Move player down
                 if (!this.gameover){
                     this.y = this.y + step;
                 }
@@ -202,7 +201,7 @@ Player.prototype.update = function(key){
         }
     }
 
-    // selector validness check
+    // Selector validness check
     if (this.selector < 0){
         this.selector = 0;
     }
@@ -211,9 +210,9 @@ Player.prototype.update = function(key){
         this.selector = 4;
     }
 
-    // player off screen check, y direction
+    // Player out of screen check, y direction
     if (this.y < border.waterline){
-        this.reset();
+        this.y = border.waterline;
     }
     if (this.y > border.bottom){
         this.y = border.bottom;
@@ -232,7 +231,7 @@ Player.prototype.handleInput = function(key){
 
 // Gem class
 var Gem = function(){
-    // assign gem sprite
+    // Assign gem sprite
     var spriteNum = Math.floor(Math.random() * 3);
 
     switch (spriteNum){
@@ -250,7 +249,7 @@ var Gem = function(){
             break;
     }
 
-    // gem position
+    // Gem position
     var currRow = Math.floor(Math.random() * 5 ) + 1;
     var currCol = Math.floor(Math.random() * 7);
     this.x = currCol * element.width;
@@ -276,7 +275,7 @@ Gem.prototype.update = function(){
             break;
     }
 
-    // gem position
+    // Gem position
     var currRow = Math.floor(Math.random() * 5 ) + 1;
     var currCol = Math.floor(Math.random() * 7);
     this.x = currCol * element.width;
@@ -287,10 +286,11 @@ Gem.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
 }
 
+// Heart class to recover player's life
 var Heart = function(){
     this.sprite = 'images/Heart.png';
-    this.visible = false;
-    this.active = false;
+    this.visible = false; // Parameter to determine whether to show heart on screen
+    this.active = false;  // Parameter to determine whether to check heart's location
 
     var hRow = Math.floor(Math.random() * 7 ) + 1;
     var hCol = Math.floor(Math.random() * 7);
@@ -299,7 +299,7 @@ var Heart = function(){
 }
 
 Heart.prototype.update = function(){
-
+    // Update heart location
     var hRow = Math.floor(Math.random() * 7 ) + 1;
     var hCol = Math.floor(Math.random() * 7);
     this.x = hCol * element.width;
@@ -315,7 +315,7 @@ Heart.prototype.sleep = function(){
     this.active = false;
 }
 
-// star class for guarding status
+// Star class for invincible status
 var Star = function(){
     this.sprite = 'images/Star.png';
     this.active = false;
@@ -337,6 +337,35 @@ Star.prototype.sleep = function(){
     this.active = false;
 }
 
+// Key class
+var Key = function(){
+    this.sprite = 'images/Key.png';
+    this.active = false;    // Parameter to determine whether to show key on screen
+    this.visible = false;   // Parameter to determine whether to check key's location
+
+    var kRow = Math.floor(Math.random() * 7 ) + 1;
+    var kCol = Math.floor(Math.random() * 7);
+    this.x = kCol * element.width;
+    this.y = kRow * element.dy - 20;
+}
+
+Key.prototype.update = function(){
+    // Randomly update key's location
+    var kRow = Math.floor(Math.random() * 7 ) + 1;
+    var kCol = Math.floor(Math.random() * 7);
+    this.x = kCol * element.width;
+    this.y = kRow * element.dy - 20;
+}
+
+Key.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 30, 60, 102);
+}
+
+Key.prototype.sleep = function(){
+    this.active = false;
+    this.visible = false;
+}
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -349,9 +378,6 @@ while(i < enemyNum){
     i++;
 }
 
-var player = new Player();
-var star = new Star();
-
 var allGems = [];
 var gemNum = 5;
 for (i = 0; i < gemNum; i++){
@@ -363,7 +389,7 @@ for (i = 0; i < gemNum; i++){
         allGems.push(newGem);
     }else{
 
-        // make sure no overlay gems on the screen
+        // Make sure no overlay gems on the screen
         do {
             for (var j = 0; j < allGems.length; j++){
                 if (newGem.x != allGems[j].x && newGem.y != allGems[j].y){
@@ -383,7 +409,10 @@ for (i = 0; i < gemNum; i++){
     }
 }
 
+var player = new Player();
+var star = new Star();
 var heart = new Heart();
+var key = new Key();
 
 
 
